@@ -5,9 +5,7 @@ package zipcodes
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"math"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -34,8 +32,8 @@ type Zipcodes struct {
 
 // New loads the dataset that this packages uses and
 // returns a struct that contains the dataset as a map interface
-func New(datasetPath string) (*Zipcodes, error) {
-	zipcodes, err := LoadDataset(datasetPath)
+func New(datasetEmbed string) (*Zipcodes, error) {
+	zipcodes, err := LoadDataset(datasetEmbed)
 	if err != nil {
 		return nil, err
 	}
@@ -160,15 +158,8 @@ func DistanceBetweenPoints(latitude1, longitude1, latitude2, longitude2 float64,
 }
 
 // LoadDataset reads and loads the dataset into a map interface
-func LoadDataset(datasetPath string) (Zipcodes, error) {
-	file, err := os.Open(datasetPath)
-	if err != nil {
-		log.Fatal(err)
-		return Zipcodes{}, fmt.Errorf("zipcodes: error while opening file %v", err)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
+func LoadDataset(datasetEmbed string) (Zipcodes, error) {
+	scanner := bufio.NewScanner(strings.NewReader(datasetEmbed))
 	zipcodeMap := Zipcodes{DatasetList: make(map[string]ZipCodeLocation)}
 	for scanner.Scan() {
 		splittedLine := strings.Split(scanner.Text(), "\t")
